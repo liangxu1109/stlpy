@@ -80,7 +80,7 @@ class ScipyGradientSolver(STLSolver):
         # for i in range(len(list1)):
         #     cons["fun"] = list1[i]
         #     cons["type"] = "ineq"
-        res = minimize(self.cost, u_guess.flatten(), method=self.method)
+        res = minimize(self.cost, u_guess.flatten(), method=self.method, constraints={"fun":self.cost, "type": "ineq"})
         solve_time = time.time() - start_time
 
         if self.verbose:
