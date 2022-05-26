@@ -82,11 +82,11 @@ class GurobiMICPSolver(STLSolver):
         self.y = self.model.addMVar((self.sys.p, self.T), lb=-float('inf'), name='y')
         self.x = self.model.addMVar((self.sys.n, self.T), lb=-float('inf'), name='x')
         self.u = self.model.addMVar((self.sys.m, self.T), lb=-float('inf'), name='u')
-        #self.rho = self.model.(1, name="rho", lb=0.0) # lb sets minimum robustness
+        self.rho = self.model.addMVar(1, name="rho", lb=0.0) # lb sets minimum robustness
 
         # Add cost and constraints to the optimization problem
         self.AddDynamicsConstraints()
-        #self.AddSTLConstraints(robustness_type)
+        self.AddSTLConstraints(robustness_type)
         self.AddRobustnessConstraint()
         if robustness_cost:
             self.AddRobustnessCost()
@@ -113,7 +113,7 @@ class GurobiMICPSolver(STLSolver):
 
     
     def AddRobustnessCost(self):
-        self.cost -= self.spec.robustness(self.y, 0, self.robustness_type)
+        self.cost -= self.rho
 
     def AddRobustnessConstraint(self, rho_min=0.0):
         self.model.addConstr( self.rho >= rho_min )
@@ -173,7 +173,7 @@ class GurobiMICPSolver(STLSolver):
         # to add binary variables and constraints that ensure that
         # rho is the robustness value
         z_spec = self.model.addMVar(1,vtype=GRB.BINARY)
-        self.model.addConstr(self.rho <= self.spec.robustness(self.y, 0, robustness_type) + (1 - z_spec) * self.M)
+        self.AddSubformulaConstraints(self.spec, z_spec, 0)
         self.model.addConstr( z_spec == 1 )
 
     def AddSubformulaConstraints(self, formula, z, t):

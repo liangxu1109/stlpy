@@ -99,7 +99,7 @@ class LinearPredicate(STLFormula):
         return LinearPredicate(-self.a, -self.b, name=newname)
 
     def robustness(self, y, t, robustness_type):
-        #assert isinstance(y, np.ndarray), "y must be a numpy array"
+        assert isinstance(y, np.ndarray), "y must be a numpy array"
         assert isinstance(t, int), "timestep t must be an integer"
         assert y.shape[0] == self.d, "y must be of shape (d,T)"
         assert y.shape[1] > t, "requested timestep %s, but y only has %s timesteps" % (t, y.shape[1])

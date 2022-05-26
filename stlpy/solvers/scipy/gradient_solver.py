@@ -1,7 +1,7 @@
 import numpy as np
 import time
 from scipy.optimize import minimize
-
+from stlpy.STL.predicate import LinearPredicate
 import stlpy.enumerations.option
 from ..base import STLSolver
 
@@ -75,7 +75,12 @@ class ScipyGradientSolver(STLSolver):
 
         # Run scipy's minimize
         start_time = time.time()
-        res = minimize(self.cost, u_guess.flatten(), method=self.method)
+        list1 = self.constraint(self.spec, u_guess.flatten())
+        cons = {}
+        for i in range(len(list1)):
+            cons["fun"] = list1[i]
+            cons["type"] = "ineq"
+        res = minimize(self.cost, u_guess.flatten(), method=self.method, constraints=cons)
         solve_time = time.time() - start_time
 
         if self.verbose:
@@ -141,3 +146,11 @@ class ScipyGradientSolver(STLSolver):
 
         return cost
 
+    def constraint(self, spec, u_flat):
+        u = u_flat.reshape((self.sys.m, self.T))
+        x, y = self.forward_rollout(u)
+        if isinstance(spec, LinearPredicate):
+            return spec.robustness(y, 0, self.robustness_type)
+        else:
+            spec = spec.subformula_list
+            return [self.constraint(spec[i], u_flat) for i in range(len(spec))]

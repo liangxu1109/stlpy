@@ -32,8 +32,8 @@ R = 1e-1*np.eye(2)
 x0 = np.array([2.0,1.3,0,0])
 
 # Specify a solution strategy
-#solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True)
-solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
+solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True)
+#solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
 
 # Set bounds on state and control variables

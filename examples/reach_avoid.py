@@ -39,7 +39,7 @@ R = 1e-1*np.eye(2)
 x0 = np.array([1.0,2.0,0,0])
 
 # Choose a solver
-#solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True, robustness_type=RobustnessMetrics.Standard)
+#solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True, robustness_type=RobustnessMetrics.AGM)
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSmoothSolver(spec, sys, x0, T, k=2.0)
