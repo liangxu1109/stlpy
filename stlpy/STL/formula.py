@@ -1,7 +1,8 @@
 import numpy as np
 from abc import ABC, abstractmethod
 from treelib import Tree
-
+import math
+from stlpy.enumerations.option import RobustnessMetrics
 class STLFormula(ABC):
     """
     An abstract class which encompasses represents all kinds of STL formulas :math:`\\varphi`, including
@@ -9,7 +10,7 @@ class STLFormula(ABC):
     predicates and other formulas).
     """
     @abstractmethod
-    def robustness(self, y, t):
+    def robustness(self, y, t, robustness_type):
         """
         Compute the robustness measure :math:`\\rho^\\varphi(y,t)` of this formula for the
         given signal :math:`y = y_0,y_1,\\dots,y_T`, evaluated at timestep :math:`t`.
@@ -349,11 +350,38 @@ class STLTree(STLFormula):
     def negation(self):
         raise NotImplementedError("Only formulas in positive normal form are supported at this time")
 
-    def robustness(self, y, t):
+    def robustness(self, y, t, robustness_type):
         if self.combination_type == "and":
-            return min( [formula.robustness(y,t+self.timesteps[i]) for i, formula in enumerate(self.subformula_list)] )
+            if robustness_type == RobustnessMetrics.AGM:
+                list = ([formula.robustness(y, t+self.timesteps[i], robustness_type ) for i, formula in
+                             enumerate(self.subformula_list)])
+                if any(0 >= list[i] for i in range(len(list))):
+                    out = (sum(list) / len(list))
+                else:
+                    out = list[0] + 1
+                    for i in range(1, len(list)):
+                        out *= (list[i] + 1)
+                    out = math.pow(out, 1 / len(list)) - 1
+                return out
+            elif robustness_type == RobustnessMetrics.Standard:
+                return min([formula.robustness(y, t+self.timesteps[i], robustness_type) for i, formula in
+                             enumerate(self.subformula_list)])
         else: # combination_type == "or"
-            return max( [formula.robustness(y,t+self.timesteps[i]) for i, formula in enumerate(self.subformula_list)] )
+            if robustness_type == RobustnessMetrics.AGM:
+                list= ([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in
+                             enumerate(self.subformula_list)])
+                if any((0 < list[i]) for i in range(len(list))):
+                    out = (sum(list) / len(list))
+                else:
+                    out = 1 - list[0]
+                    for i in range(1, len(list)):
+                        out *= (1 - list[i])
+                    out = - math.pow(out, 1 / len(list)) + 1
+                return out
+            elif robustness_type == RobustnessMetrics.Standard:
+                return max([formula.robustness(y, t+self.timesteps[i], robustness_type) for i, formula in
+                             enumerate(self.subformula_list)])
+
 
     def is_predicate(self):
         return False

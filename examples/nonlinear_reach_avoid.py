@@ -36,16 +36,16 @@ R = 1e-3*np.eye(2)
 x0 = np.array([1.0,2.0,0])
 
 # Choose a solver
-solver = DrakeSmoothSolver(spec, sys, x0, T, k=2.0)
-#solver = ScipyGradientSolver(spec, sys, x0, T)
+#solver = DrakeSmoothSolver(spec, sys, x0, T, k=2.0)
+solver = ScipyGradientSolver(spec, sys, x0, T)
 
 # Set bounds on state and control variables
 u_min = np.array([0,-5.0])
 u_max = np.array([10, 5.0])
 x_min = np.array([-10.0, -10.0, -2*np.pi])
 x_max = np.array([10.0, 10.0, 2*np.pi])
-solver.AddControlBounds(u_min, u_max)
-solver.AddStateBounds(x_min, x_max)
+#solver.AddControlBounds(u_min, u_max)
+#solver.AddStateBounds(x_min, x_max)
 
 # Add quadratic running cost (optional)
 solver.AddQuadraticCost(Q,R)

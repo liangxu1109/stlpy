@@ -1,3 +1,4 @@
+import stlpy.enumerations.option
 from ..base import STLSolver
 from ...STL import LinearPredicate, NonlinearPredicate
 import numpy as np
@@ -51,9 +52,12 @@ class GurobiMICPSolver(STLSolver):
     """
 
     def __init__(self, spec, sys, x0, T, M=1000, robustness_cost=True, 
-            presolve=True, verbose=True):
+            presolve=True, verbose=True, robustness_type=stlpy.enumerations.option.RobustnessMetrics.Standard):
         assert M > 0, "M should be a (large) positive scalar"
-        super().__init__(spec, sys, x0, T, verbose)
+        super().__init__(spec, sys, x0, T, verbose, robustness_type)
+        self.spec = spec
+        self.robustness_type = robustness_type
+
 
         self.M = float(M)
         self.presolve = presolve
@@ -78,11 +82,11 @@ class GurobiMICPSolver(STLSolver):
         self.y = self.model.addMVar((self.sys.p, self.T), lb=-float('inf'), name='y')
         self.x = self.model.addMVar((self.sys.n, self.T), lb=-float('inf'), name='x')
         self.u = self.model.addMVar((self.sys.m, self.T), lb=-float('inf'), name='u')
-        self.rho = self.model.addMVar(1,name="rho",lb=0.0) # lb sets minimum robustness
+        #self.rho = self.model.(1, name="rho", lb=0.0) # lb sets minimum robustness
 
         # Add cost and constraints to the optimization problem
         self.AddDynamicsConstraints()
-        self.AddSTLConstraints()
+        #self.AddSTLConstraints(robustness_type)
         self.AddRobustnessConstraint()
         if robustness_cost:
             self.AddRobustnessCost()
@@ -106,9 +110,10 @@ class GurobiMICPSolver(STLSolver):
             self.cost += self.x[:,t]@Q@self.x[:,t] + self.u[:,t]@R@self.u[:,t]
 
         print(type(self.cost))
+
     
     def AddRobustnessCost(self):
-        self.cost -= 1*self.rho
+        self.cost -= self.spec.robustness(self.y, 0, self.robustness_type)
 
     def AddRobustnessConstraint(self, rho_min=0.0):
         self.model.addConstr( self.rho >= rho_min )
@@ -126,7 +131,7 @@ class GurobiMICPSolver(STLSolver):
                 print("\nOptimal Solution Found!\n")
             x = self.x.X
             u = self.u.X
-            rho = self.rho.X[0]
+            rho = self.rho.X
 
             # Report optimal cost and robustness
             if self.verbose:
@@ -157,20 +162,18 @@ class GurobiMICPSolver(STLSolver):
         self.model.addConstr(
                 self.y[:,self.T-1] == self.sys.C@self.x[:,self.T-1] + self.sys.D@self.u[:,self.T-1] )
 
-    def AddSTLConstraints(self):
+    def AddSTLConstraints(self, robustness_type):
         """
         Add the STL constraints
-
             (x,u) |= specification
-
         to the optimization problem, via the recursive introduction
         of binary variables for all subformulas in the specification.
         """
         # Recursively traverse the tree defined by the specification
         # to add binary variables and constraints that ensure that
         # rho is the robustness value
-        z_spec = self.model.addMVar(1,vtype=GRB.CONTINUOUS)
-        self.AddSubformulaConstraints(self.spec, z_spec, 0)
+        z_spec = self.model.addMVar(1,vtype=GRB.BINARY)
+        self.model.addConstr(self.rho <= self.spec.robustness(self.y, 0, robustness_type) + (1 - z_spec) * self.M)
         self.model.addConstr( z_spec == 1 )
 
     def AddSubformulaConstraints(self, formula, z, t):
@@ -204,10 +207,10 @@ class GurobiMICPSolver(STLSolver):
         # We're at the bottom of the tree, so add the big-M constraints
         if isinstance(formula, LinearPredicate):
             # a.T*y - b + (1-z)*M >= rho
-            self.model.addConstr( formula.a.T@self.y[:,t] - formula.b + (1-z)*self.M  >= self.rho )
+            self.model.addConstr( formula.a.T@self.y[:, t] - formula.b + (1-z)*self.M  >= self.rho )
 
             # Force z to be binary
-            b = self.model.addMVar(1,vtype=GRB.BINARY)
+            b = self.model.addMVar(1, vtype=GRB.BINARY)
             self.model.addConstr(z == b)
         
         elif isinstance(formula, NonlinearPredicate):
@@ -218,7 +221,7 @@ class GurobiMICPSolver(STLSolver):
         else:
             if formula.combination_type == "and":
                 for i, subformula in enumerate(formula.subformula_list):
-                    z_sub = self.model.addMVar(1,vtype=GRB.CONTINUOUS)
+                    z_sub = self.model.addMVar(1, vtype=GRB.CONTINUOUS)
                     t_sub = formula.timesteps[i]   # the timestep at which this formula
                                                    # should hold
                     self.AddSubformulaConstraints(subformula, z_sub, t+t_sub)
@@ -227,9 +230,9 @@ class GurobiMICPSolver(STLSolver):
             else:  # combination_type == "or":
                 z_subs = []
                 for i, subformula in enumerate(formula.subformula_list):
-                    z_sub = self.model.addMVar(1,vtype=GRB.CONTINUOUS)
+                    z_sub = self.model.addMVar(1, vtype=GRB.CONTINUOUS)
                     z_subs.append(z_sub)
                     t_sub = formula.timesteps[i]
                     self.AddSubformulaConstraints(subformula, z_sub, t+t_sub)
-                self.model.addConstr( z <= sum(z_subs) )
+                self.model.addConstr(z <= sum(z_subs))
 

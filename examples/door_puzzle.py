@@ -12,6 +12,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from stlpy.benchmarks import DoorPuzzle
 from stlpy.solvers import *
+from stlpy.solvers.scipy.gradient_solver import ScipyGradientSolver
+from stlpy.enumerations.option import RobustnessMetrics
 
 # Specification Parameters
 T = 25
@@ -32,10 +34,10 @@ R = 1e-1*np.eye(2)
 x0 = np.array([6.0,1.0,0,0])
 
 # Define the solver
-#solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=False)
+solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=False, robustness_type=RobustnessMetrics.Standard)
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
-solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
-
+#solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
+#solver = ScipyGradientSolver(spec,sys,x0,T)
 # Set bounds on state and control variables
 u_min = np.array([-0.5,-0.5])
 u_max = np.array([0.5, 0.5])
@@ -49,6 +51,7 @@ solver.AddQuadraticCost(0.01*Q,0.01*R)
 
 # Solve the optimization problem
 x, u, _, _ = solver.Solve()
+print(x.shape)
 
 if x is not None:
     # Plot the solution

@@ -33,13 +33,14 @@ class STLSolver(ABC):
     :param T:       A positive integer fixing the total number of timesteps :math:`T`.
     :param verbose: A boolean specifying whether to print detailed solver info.
     """
-    def __init__(self, spec, sys, x0, T, verbose):
+    def __init__(self, spec, sys, x0, T, verbose, robustness_type):
         # Store the relevant data
         self.sys = sys
         self.spec = spec
         self.x0 = x0
         self.T = T+1  # needed to be consistent with how we've defined STLFormula
         self.verbose = verbose
+        self.robustness_type = robustness_type
 
     @abstractmethod
     def AddDynamicsConstraints(self):

@@ -1,6 +1,8 @@
 import numpy as np
 import time
 from scipy.optimize import minimize
+
+import stlpy.enumerations.option
 from ..base import STLSolver
 
 class ScipyGradientSolver(STLSolver):
@@ -36,8 +38,8 @@ class ScipyGradientSolver(STLSolver):
     :param verbose: (optional) A boolean indicating whether to print detailed
                     solver info. Default is ``True``.
     """
-    def __init__(self, spec, sys, x0, T, method="slsqp", verbose=True):
-        super().__init__(spec, sys, x0, T, verbose)
+    def __init__(self, spec, sys, x0, T, method="slsqp", verbose=True, robustness_type=stlpy.enumerations.option.RobustnessMetrics.Standard):
+        super().__init__(spec, sys, x0, T, verbose, robustness_type)
         self.Q = np.zeros((sys.n,sys.n))
         self.R = np.zeros((sys.m,sys.m))
         self.method = method
@@ -73,8 +75,7 @@ class ScipyGradientSolver(STLSolver):
 
         # Run scipy's minimize
         start_time = time.time()
-        res = minimize(self.cost, u_guess.flatten(),
-                method=self.method)
+        res = minimize(self.cost, u_guess.flatten(), method=self.method)
         solve_time = time.time() - start_time
 
         if self.verbose:
@@ -85,7 +86,7 @@ class ScipyGradientSolver(STLSolver):
             u = res.x.reshape((self.sys.m,self.T))
             x, y = self.forward_rollout(u)
 
-            rho = self.spec.robustness(y, 0)[0]
+            rho = self.spec.robustness(y, 0, self.robustness_type)
             if self.verbose:
                 print("Optimal robustness: ", rho)
         else:
@@ -136,6 +137,7 @@ class ScipyGradientSolver(STLSolver):
 
         # Add the (negative) robustness of this signal y with respect
         # to the specification to the cost
-        cost += -self.spec.robustness(y,0)
+        cost += -self.spec.robustness(y, 0, self.robustness_type)
 
         return cost
+
