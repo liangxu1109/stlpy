@@ -75,12 +75,12 @@ class ScipyGradientSolver(STLSolver):
 
         # Run scipy's minimize
         start_time = time.time()
-        list1 = self.constraint(self.spec, u_guess.flatten())
-        cons = {}
-        for i in range(len(list1)):
-            cons["fun"] = list1[i]
-            cons["type"] = "ineq"
-        res = minimize(self.cost, u_guess.flatten(), method=self.method, constraints=cons)
+        # list1 = self.constraint(self.spec, u_guess.flatten())
+        # cons = {}
+        # for i in range(len(list1)):
+        #     cons["fun"] = list1[i]
+        #     cons["type"] = "ineq"
+        res = minimize(self.cost, u_guess.flatten(), method=self.method)
         solve_time = time.time() - start_time
 
         if self.verbose:

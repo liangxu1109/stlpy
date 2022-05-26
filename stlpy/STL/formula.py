@@ -355,7 +355,11 @@ class STLTree(STLFormula):
             if robustness_type == RobustnessMetrics.AGM:
                 list = ([formula.robustness(y, t+self.timesteps[i], robustness_type ) for i, formula in
                              enumerate(self.subformula_list)])
-                if any(0 >= list[i] for i in range(len(list))):
+                if any( list[i] <= 0 for i in range(len(list))):
+                    list = []
+                    for i in range(len(list)):
+                        if list[i] <= 0:
+                            list.append(list[i])
                     out = (sum(list) / len(list))
                 else:
                     out = list[0] + 1
@@ -370,7 +374,11 @@ class STLTree(STLFormula):
             if robustness_type == RobustnessMetrics.AGM:
                 list= ([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in
                              enumerate(self.subformula_list)])
-                if any((0 < list[i]) for i in range(len(list))):
+                if any(list[i] > 0 for i in range(len(list))):
+                    list = []
+                    for i in range(len(list)):
+                        if list[i] > 0:
+                            list.append(list[i])
                     out = (sum(list) / len(list))
                 else:
                     out = 1 - list[0]
