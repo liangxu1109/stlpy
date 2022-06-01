@@ -34,17 +34,17 @@ R = 1e-1*np.eye(2)
 x0 = np.array([6.0,1.0,0,0])
 
 # Define the solver
-solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=False, robustness_type=RobustnessMetrics.Standard)
+#solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=False, robustness_type=RobustnessMetrics.Standard)
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
-#solver = ScipyGradientSolver(spec,sys,x0,T, robustness_type=RobustnessMetrics.Standard)
+solver = ScipyGradientSolver(spec,sys,x0,T, robustness_type=RobustnessMetrics.AGM)
 # Set bounds on state and control variables
 u_min = np.array([-0.5,-0.5])
 u_max = np.array([0.5, 0.5])
 x_min = np.array([0.0, 0.0, -2.0, -2.0])
 x_max = np.array([15.0, 10.0, 2.0, 2.0])
-solver.AddControlBounds(u_min, u_max)
-solver.AddStateBounds(x_min, x_max)
+# solver.AddControlBounds(u_min, u_max)
+# solver.AddStateBounds(x_min, x_max)
 
 # Add quadratic running cost (optional)
 solver.AddQuadraticCost(0.01*Q,0.01*R)

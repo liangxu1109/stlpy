@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 from treelib import Tree
 import math
 from stlpy.enumerations.option import RobustnessMetrics
+from stlpy.RobustnessMeasure.RobustnessMeasureAnd import RobustnessMeasure_and
+from stlpy.RobustnessMeasure.RobustnessMeasureOr import RobustnessMeasure_or
 class STLFormula(ABC):
     """
     An abstract class which encompasses represents all kinds of STL formulas :math:`\\varphi`, including
@@ -353,44 +355,30 @@ class STLTree(STLFormula):
     def robustness(self, y, t, robustness_type):
         if self.combination_type == "and":
             if robustness_type == RobustnessMetrics.AGM:
-                list = ([formula.robustness(y, t+self.timesteps[i], robustness_type ) for i, formula in
-                             enumerate(self.subformula_list)])
-                if any( list[i] <= 0 for i in range(len(list))):
-                    list1 = []
-                    for i in range(len(list)):
-                        if list[i] <= 0:
-                            list1.append(list[i])
-                    out = (sum(list1) / len(list))
-                else:
-                    out = list[0] + 1
-                    for i in range(1, len(list)):
-                        out *= (list[i] + 1)
-                    out = math.pow(out, 1 / len(list)) - 1
-                return out
+                return RobustnessMeasure_and.AGM(self, y, t, robustness_type)
             elif robustness_type == RobustnessMetrics.Standard:
-                return min([formula.robustness(y, t+self.timesteps[i], robustness_type) for i, formula in
-                             enumerate(self.subformula_list)])
+                return RobustnessMeasure_and.Standard(self, y, t, robustness_type)
+            elif robustness_type == RobustnessMetrics.Smooth:
+                return RobustnessMeasure_and.Smooth(self, y, t, robustness_type)
+            elif robustness_type == RobustnessMetrics.wSTL(self, y, t, robustness_type):
+                # TODO: weighted Traditional or AGM
+                pass
+            elif robustness_type == RobustnessMetrics.NewRobustness(self, y, t, robustness_type):
+                # TODO: weighted Traditional or AGM
+                pass
         elif self.combination_type == "or":
             if robustness_type == RobustnessMetrics.AGM:
-                list= ([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in
-                             enumerate(self.subformula_list)])
-                if any(list[i] > 0 for i in range(len(list))):
-                    list1 = []
-                    for i in range(len(list)):
-                        if list[i] > 0:
-                            list1.append(list[i])
-                    out = (sum(list1) / len(list))
-                else:
-                    out = 1 - list[0]
-                    for i in range(1, len(list)):
-                        out *= (1 - list[i])
-                    out = - math.pow(out, 1 / len(list)) + 1
-                return out
+                return RobustnessMeasure_or.AGM(self, y, t, robustness_type)
             elif robustness_type == RobustnessMetrics.Standard:
-                return max([formula.robustness(y, t+self.timesteps[i], robustness_type) for i, formula in
-                             enumerate(self.subformula_list)])
-
-
+                return RobustnessMeasure_or.Standard(self, y, t, robustness_type)
+            elif robustness_type == RobustnessMetrics.Smooth:
+                return RobustnessMeasure_or.Smooth(self, y, t, robustness_type)
+            elif robustness_type == RobustnessMetrics.wSTL(self, y, t, robustness_type):
+                # TODO: weighted Traditional or AGM
+                pass
+            elif robustness_type == RobustnessMetrics.NewRobustness(self, y, t, robustness_type):
+                # TODO: weighted Traditional or AGM
+                pass
     def is_predicate(self):
         return False
 
