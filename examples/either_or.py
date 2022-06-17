@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from stlpy.benchmarks import EitherOr
 from stlpy.solvers import *
-
+from stlpy.enumerations.option import RobustnessMetrics
 # Specification Parameters
 goal = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
 target_one = (1,2,6,7)
@@ -35,17 +35,18 @@ R = 1e-0*np.eye(2)
 x0 = np.array([2.0,2.0,0,0])
 
 # Specify a solution strategy
-solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True)
+#solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
+solver = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Standard)
 
 # Set bounds on state and control variables
 u_min = np.array([-0.5,-0.5])
 u_max = np.array([0.5, 0.5])
 x_min = np.array([0.0, 0.0, -1.0, -1.0])
 x_max = np.array([10.0, 10.0, 1.0, 1.0])
-solver.AddControlBounds(u_min, u_max)
-solver.AddStateBounds(x_min, x_max)
+#solver.AddControlBounds(u_min, u_max)
+#solver.AddStateBounds(x_min, x_max)
 
 # Add quadratic running cost (optional)
 solver.AddQuadraticCost(Q,R)

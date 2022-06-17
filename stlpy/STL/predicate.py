@@ -31,7 +31,7 @@ class NonlinearPredicate(STLFormula):
         negative_g = lambda y : -self.g(y)
         return NonlinearPredicate(negative_g, self.d, name=newname)
 
-    def robustness(self, y, t):
+    def robustness(self, y, t,robustness_type):
         assert isinstance(y, np.ndarray), "y must be a numpy array"
         assert isinstance(t, int), "timestep t must be an integer"
         assert y.shape[0] == self.d, "y must be of shape (d,T)"

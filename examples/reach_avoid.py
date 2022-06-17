@@ -20,7 +20,7 @@ from stlpy.enumerations.option import RobustnessMetrics
 # Specification Parameters
 goal_bounds = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
 obstacle_bounds = (3,5,4,6)
-T = 20
+T = 10
 
 # Define the system and specification
 scenario = ReachAvoid(goal_bounds, obstacle_bounds, T)
@@ -39,12 +39,12 @@ R = 1e-1*np.eye(2)
 x0 = np.array([1.0,2.0,0,0])
 
 # Choose a solver
-#solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True, robustness_type=RobustnessMetrics.AGM)
+#solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True, robustness_type=RobustnessMetrics.Standard)
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSmoothSolver(spec, sys, x0, T, k=2.0)
-solver = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Smooth)
-
+solver1 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Standard)
+solver2 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Smooth)
 #Set bounds on state and control variables
 # u_min = np.array([-0.5,-0.5])
 # u_max = np.array([0.5, 0.5])
@@ -54,14 +54,20 @@ solver = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics
 #solver.AddStateBounds(x_min, x_max)
 
 # Add quadratic running cost (optional)
-solver.AddQuadraticCost(Q,R)
+solver1.AddQuadraticCost(Q,R)
+solver2.AddQuadraticCost(Q,R)
 
 # Solve the optimization problem
-x, u, _, _= solver.Solve()
-print(x)
-if x is not None:
+x1, u1, _, _= solver1.Solve()
+x2, u2, _, _= solver2.Solve()
+print(u1)
+print(u2)
+#print(x)
+if x1 is not None:
     # Plot the solution
     ax = plt.gca()
     scenario.add_to_plot(ax)
-    plt.scatter(*x[:2,:])
+    plt.scatter(*x1[:2,:])
+    plt.scatter(*x2[:2, :])
     plt.show()
+

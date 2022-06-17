@@ -37,7 +37,7 @@ x0 = np.array([6.0,1.0,0,0])
 #solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=False, robustness_type=RobustnessMetrics.Standard)
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
-solver = ScipyGradientSolver(spec,sys,x0,T, robustness_type=RobustnessMetrics.AGM)
+solver = ScipyGradientSolver(spec,sys,x0,T, robustness_type=RobustnessMetrics.Standard)
 # Set bounds on state and control variables
 u_min = np.array([-0.5,-0.5])
 u_max = np.array([0.5, 0.5])
