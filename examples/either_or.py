@@ -38,7 +38,9 @@ x0 = np.array([2.0,2.0,0,0])
 #solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
-solver = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Standard)
+solver1 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.AGM)
+solver2 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.wSTL_Standard)
+solver3 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.wSTL_AGM)
 
 # Set bounds on state and control variables
 u_min = np.array([-0.5,-0.5])
@@ -49,14 +51,18 @@ x_max = np.array([10.0, 10.0, 1.0, 1.0])
 #solver.AddStateBounds(x_min, x_max)
 
 # Add quadratic running cost (optional)
-solver.AddQuadraticCost(Q,R)
+#solver.AddQuadraticCost(Q,R)
 
 # Solve the optimization problem
-x, u, _, _ = solver.Solve()
+x1, u1, _, _ = solver1.Solve()
+x2, u2, _, _ = solver2.Solve()
+x3, u3, _, _ = solver3.Solve()
 
-if x is not None:
+if x1 is not None:
     # Plot the solution
     ax = plt.gca()
     scenario.add_to_plot(ax)
-    plt.scatter(*x[:2,:])
+    plt.scatter(*x1[:2, :])
+    plt.scatter(*x2[:2, :])
+    plt.scatter(*x3[:2, :])
     plt.show()

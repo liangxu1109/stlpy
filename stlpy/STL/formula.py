@@ -360,10 +360,13 @@ class STLTree(STLFormula):
                 return RobustnessMeasure_and.Standard(self, y, t, robustness_type)
             elif robustness_type == RobustnessMetrics.Smooth:
                 return RobustnessMeasure_and.Smooth(self, y, t, robustness_type)
-            elif robustness_type == RobustnessMetrics.wSTL(self, y, t, robustness_type):
-                # TODO: weighted Traditional or AGM
-                pass
-            elif robustness_type == RobustnessMetrics.NewRobustness(self, y, t, robustness_type):
+            elif robustness_type == RobustnessMetrics.LSE:
+                return RobustnessMeasure_and.LSE(self, y, t, robustness_type)
+            elif robustness_type == RobustnessMetrics.wSTL_Standard:
+                return RobustnessMeasure_and.wSTL_Standard(self, y, t, robustness_type)
+            elif robustness_type == RobustnessMetrics.wSTL_AGM:
+                return RobustnessMeasure_and.wSTL_AGM(self, y, t, robustness_type)
+            elif robustness_type == RobustnessMetrics.NewRobustness:
                 # TODO: weighted Traditional or AGM
                 pass
         elif self.combination_type == "or":
@@ -373,10 +376,13 @@ class STLTree(STLFormula):
                 return RobustnessMeasure_or.Standard(self, y, t, robustness_type)
             elif robustness_type == RobustnessMetrics.Smooth:
                 return RobustnessMeasure_or.Smooth(self, y, t, robustness_type)
-            elif robustness_type == RobustnessMetrics.wSTL(self, y, t, robustness_type):
-                # TODO: weighted Traditional or AGM
-                pass
-            elif robustness_type == RobustnessMetrics.NewRobustness(self, y, t, robustness_type):
+            elif robustness_type == RobustnessMetrics.LSE:
+                return RobustnessMeasure_or.LSE(self, y, t, robustness_type)
+            elif robustness_type == RobustnessMetrics.wSTL_Standard:
+                return RobustnessMeasure_or.wSTL_Standard(self, y, t, robustness_type)
+            elif robustness_type == RobustnessMetrics.wSTL_AGM:
+                return RobustnessMeasure_or.wSTL_AGM(self, y, t, robustness_type)
+            elif robustness_type == RobustnessMetrics.NewRobustness:
                 # TODO: weighted Traditional or AGM
                 pass
     def is_predicate(self):

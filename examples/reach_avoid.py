@@ -20,7 +20,7 @@ from stlpy.enumerations.option import RobustnessMetrics
 # Specification Parameters
 goal_bounds = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
 obstacle_bounds = (3,5,4,6)
-T = 10
+T = 20
 
 # Define the system and specification
 scenario = ReachAvoid(goal_bounds, obstacle_bounds, T)
@@ -32,7 +32,7 @@ sys = scenario.GetSystem()
 
 # Specify any additional running cost (this helps the numerics in
 # a gradient-based method)
-Q = 1e-1*np.diag([0,0,1,1])   # just penalize high velocities
+Q = 1e-5*np.diag([0,0,1,1])   # just penalize high velocities
 R = 1e-1*np.eye(2)
 
 # Initial state
@@ -43,8 +43,10 @@ x0 = np.array([1.0,2.0,0,0])
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSmoothSolver(spec, sys, x0, T, k=2.0)
-solver1 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Standard)
-solver2 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Smooth)
+# solver1 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Standard)
+# solver2 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.AGM)
+# solver3 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Smooth)
+solver4 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.LSE)
 #Set bounds on state and control variables
 # u_min = np.array([-0.5,-0.5])
 # u_max = np.array([0.5, 0.5])
@@ -54,20 +56,28 @@ solver2 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetric
 #solver.AddStateBounds(x_min, x_max)
 
 # Add quadratic running cost (optional)
-solver1.AddQuadraticCost(Q,R)
-solver2.AddQuadraticCost(Q,R)
+# solver1.AddQuadraticCost(Q,R)
+# solver2.AddQuadraticCost(Q,R)
+# solver3.AddQuadraticCost(Q,R)
+solver4.AddQuadraticCost(Q,R)
 
 # Solve the optimization problem
-x1, u1, _, _= solver1.Solve()
-x2, u2, _, _= solver2.Solve()
-print(u1)
-print(u2)
+# x1, u1, _, _= solver1.Solve()
+# x2, u2, _, _= solver2.Solve()
+# x3, u3, _, _= solver3.Solve()
+x4, u4, _, _= solver4.Solve()
+# print(u1)
+# print(u2)
+# print(u3)
+print(u4)
 #print(x)
-if x1 is not None:
+if x4 is not None:
     # Plot the solution
     ax = plt.gca()
     scenario.add_to_plot(ax)
-    plt.scatter(*x1[:2,:])
-    plt.scatter(*x2[:2, :])
+    # plt.scatter(*x1[:2, :])
+    # plt.scatter(*x2[:2, :])
+    # plt.scatter(*x3[:2, :])
+    plt.scatter(*x4[:2, :])
     plt.show()
 
