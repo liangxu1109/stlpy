@@ -70,8 +70,9 @@ class ScipyGradientSolver(STLSolver):
 
     def Solve(self):
         # Set an initial guess
-        np.random.seed(0)  # for reproducability
+        np.random.seed(0)  # for reproducability /same initialization
         u_guess = np.random.uniform(-0.2,0.2,(self.sys.m,self.T))
+        print(u_guess)
         #u_guess = np.random.uniform(0.29,0.3, (self.sys.m,self.T))
         # Run scipy's minimize
         start_time = time.time()

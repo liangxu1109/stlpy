@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from stlpy.benchmarks import EitherOr
 from stlpy.solvers import *
 from stlpy.enumerations.option import RobustnessMetrics
+from stlpy.solvers.scipy.scipysolver import solver_list
 # Specification Parameters
 goal = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
 target_one = (1,2,6,7)
@@ -38,31 +39,28 @@ x0 = np.array([2.0,2.0,0,0])
 #solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
-solver1 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.AGM)
-solver2 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.wSTL_Standard)
-solver3 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.wSTL_AGM)
+robustness_index = [1, 2, 3]
+solver = [0]
+for i in robustness_index:
+    solver.append(solver_list(spec, sys, x0, T, i))
 
 # Set bounds on state and control variables
-u_min = np.array([-0.5,-0.5])
-u_max = np.array([0.5, 0.5])
-x_min = np.array([0.0, 0.0, -1.0, -1.0])
-x_max = np.array([10.0, 10.0, 1.0, 1.0])
+# u_min = np.array([-0.5,-0.5])
+# u_max = np.array([0.5, 0.5])
+# x_min = np.array([0.0, 0.0, -1.0, -1.0])
+# x_max = np.array([10.0, 10.0, 1.0, 1.0])
 #solver.AddControlBounds(u_min, u_max)
 #solver.AddStateBounds(x_min, x_max)
 
 # Add quadratic running cost (optional)
 #solver.AddQuadraticCost(Q,R)
 
+ax = plt.gca()
+scenario.add_to_plot(ax)
 # Solve the optimization problem
-x1, u1, _, _ = solver1.Solve()
-x2, u2, _, _ = solver2.Solve()
-x3, u3, _, _ = solver3.Solve()
+for i in range(1,len(robustness_index)+1):
+    xi, ui, _, _ = solver[i].Solve()
+    if xi is not None:
+        plt.scatter(*xi[:2, :])
+plt.show()
 
-if x1 is not None:
-    # Plot the solution
-    ax = plt.gca()
-    scenario.add_to_plot(ax)
-    plt.scatter(*x1[:2, :])
-    plt.scatter(*x2[:2, :])
-    plt.scatter(*x3[:2, :])
-    plt.show()
