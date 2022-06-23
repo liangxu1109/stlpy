@@ -60,4 +60,9 @@ class RobustnessMeasure_or():
         return out
 
     def NewRobustness(self, y, t, robustness_type):
+        # TODO:
+        pass
+
+    def TimeRobustness(self, y, t, robustness_type):
+        # TODO:
         pass

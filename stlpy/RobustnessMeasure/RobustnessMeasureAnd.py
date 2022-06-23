@@ -92,3 +92,6 @@ class RobustnessMeasure_and():
 
     def NewRobustness(self, y, t, robustness_type):
         pass
+
+    def TimeRobustness(self, y, t, robustness_type):
+        pass

@@ -367,7 +367,10 @@ class STLTree(STLFormula):
             elif robustness_type == RobustnessMetrics.wSTL_AGM:
                 return RobustnessMeasure_and.wSTL_AGM(self, y, t, robustness_type)
             elif robustness_type == RobustnessMetrics.NewRobustness:
-                # TODO: weighted Traditional or AGM
+                # TODO:
+                pass
+            elif robustness_type == RobustnessMetrics.TimeRobustness:
+                # TODO:
                 pass
         elif self.combination_type == "or":
             if robustness_type == RobustnessMetrics.AGM:
@@ -383,7 +386,10 @@ class STLTree(STLFormula):
             elif robustness_type == RobustnessMetrics.wSTL_AGM:
                 return RobustnessMeasure_or.wSTL_AGM(self, y, t, robustness_type)
             elif robustness_type == RobustnessMetrics.NewRobustness:
-                # TODO: weighted Traditional or AGM
+                # TODO:
+                pass
+            elif robustness_type == RobustnessMetrics.TimeRobustness:
+                # TODO:
                 pass
     def is_predicate(self):
         return False
