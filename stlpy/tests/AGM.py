@@ -65,6 +65,9 @@ import math
 # print(out)
 
 
-solver = []
-solver.append("asd")
-print(solver)
+# solver = []
+# solver.append("asd")
+# print(solver)
+
+list=[1,2,3,4,-5,6,7,8,9,10]
+print(min(list))

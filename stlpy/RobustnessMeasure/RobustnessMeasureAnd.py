@@ -93,17 +93,30 @@ class RobustnessMeasure_and():
     def NewRobustness(self, y, t, robustness_type):
         list = ([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in
                  enumerate(self.subformula_list)])  # all robustness in a entirely encoded STL
-        if any(list[i] <= 0 for i in range(len(list))):
-            list1 = []  # list which is calculated, only choose the negative robustness
-            for i in range(len(list)):
-                if list[i] <= 0:
-                    list1.append(list[i])
-            out = (sum(list1) / len(list))
+        v = 3  # parameter v > 0 is then defined by taking the weighted average of these effective measures
+        rho_tilde = [] #Using this normalized measure, it can be transformed to be non-positive and becomes 0 at rho_i = rho_min
+        rho_eff = []
+        numerator = 0
+        denominator = 0
+        rho_min = min(list)
+        if min(list) < 0:
+            for i in range(0, len(list)):
+                tilde_i = (list[i] - rho_min) / rho_min
+                rho_tilde.append(tilde_i)
+                rho_eff.append(rho_min * np.exp(rho_tilde[i]))
+                numerator += (rho_eff * np.exp(v * rho_tilde[i]))
+                denominator += np.exp(v * rho_tilde[i])
+            out = numerator / denominator
+        elif min(list) > 0:
+            for i in range(0, len(list)):
+                tilde_i = (list[i] - rho_min) / rho_min
+                rho_tilde.append(tilde_i)
+                rho_eff.append(rho_min * np.exp(rho_tilde[i]))
+                numerator += (list[i] * np.exp(-v * rho_tilde[i]))
+                denominator += np.exp(-v * rho_tilde[i])
+            out = numerator / denominator
         else:
-            out = list[0] + 1  #
-            for i in range(1, len(list)):
-                out *= (list[i] + 1)
-            out = math.pow(out, 1 / len(list)) - 1
+            out = 0
         return out
 
 
