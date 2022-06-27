@@ -44,7 +44,7 @@ x0 = np.array([1.0,2.0,0,0])
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSmoothSolver(spec, sys, x0, T, k=2.0)
-# solver1 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Standard)
+solver1 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.NewRobustness)
 # solver2 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.AGM)
 # solver3 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Smooth)
 #solver4 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.LSE)
@@ -57,31 +57,37 @@ x0 = np.array([1.0,2.0,0,0])
 #solver.AddStateBounds(x_min, x_max)
 
 # Add quadratic running cost (optional)
-# solver1.AddQuadraticCost(Q,R)
+#solver1.AddQuadraticCost(Q,R)
 # solver2.AddQuadraticCost(Q,R)
 # solver3.AddQuadraticCost(Q,R)
 #solver4.AddQuadraticCost(Q,R)
 
 # Solve the optimization problem
-# x1, u1, _, _= solver1.Solve()
+x1, u1, _, _= solver1.Solve()
 # x2, u2, _, _= solver2.Solve()
 # x3, u3, _, _= solver3.Solve()
 #x4, u4, _, _= solver4.Solve()
-# print(u1)
+print(u1)
 # print(u2)
 # print(u3)
+if x1 is not None:
+    # Plot the solution
+    ax = plt.gca()
+    scenario.add_to_plot(ax)
+    plt.scatter(*x1[:2,:])
+    plt.show()
 
-robustness_index = [1, 2, 3]
-solver = [0]
-for i in robustness_index:
-    solver.append(solver_list(spec, sys, x0, T, i))
-ax = plt.gca()
-scenario.add_to_plot(ax)
-
-# Solve the optimization problem
-for i in range(1,len(robustness_index)+1):
-    xi, ui, _, _ = solver[i].Solve()
-    if xi is not None:
-        plt.scatter(*xi[:2, :])
-plt.show()
+# robustness_index = [1, 2, 3]
+# solver = [0]
+# for i in robustness_index:
+#     solver.append(solver_list(spec, sys, x0, T, i))
+# ax = plt.gca()
+# scenario.add_to_plot(ax)
+#
+# # Solve the optimization problem
+# for i in range(1,len(robustness_index)+1):
+#     xi, ui, _, _ = solver[i].Solve()
+#     if xi is not None:
+#         plt.scatter(*xi[:2, :])
+# plt.show()
 

@@ -98,17 +98,18 @@ class RobustnessMeasure_and():
         rho_eff = []
         numerator = 0
         denominator = 0
-        rho_min = min(list)
+        rho_min = min(list) #why error? TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'
         for i in range(0, len(list)):
-            tilde_i = (list[i] - rho_min) / rho_min
-            rho_tilde.append(tilde_i)
-            rho_eff.append(rho_min * np.exp(rho_tilde[i]))
-        if min(list) < 0:
+            if rho_min != 0:
+                tilde_i = (list[i] - rho_min) / rho_min
+                rho_tilde.append(tilde_i)
+                rho_eff.append(rho_min * np.exp(rho_tilde[i]))
+        if rho_min < 0:
             for i in range(0, len(list)):
-                numerator += (rho_eff * np.exp(v * rho_tilde[i]))
+                numerator += (rho_eff[i] * np.exp(v * rho_tilde[i]))
                 denominator += np.exp(v * rho_tilde[i])
             out = numerator / denominator
-        elif min(list) > 0:
+        elif rho_min > 0:
             for i in range(0, len(list)):
                 numerator += (list[i] * np.exp(-v * rho_tilde[i]))
                 denominator += np.exp(-v * rho_tilde[i])
