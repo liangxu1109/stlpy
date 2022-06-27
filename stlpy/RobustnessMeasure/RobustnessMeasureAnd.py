@@ -103,16 +103,18 @@ class RobustnessMeasure_and():
             tilde_i = (list[i] - rho_min) / rho_min
             rho_tilde.append(tilde_i)
             rho_eff.append(rho_min * np.exp(rho_tilde[i]))
-            if min(list) < 0:
+        if min(list) < 0:
+            for i in range(0, len(list)):
                 numerator += (rho_eff * np.exp(v * rho_tilde[i]))
                 denominator += np.exp(v * rho_tilde[i])
-                out = numerator / denominator
-            elif min(list) > 0:
+            out = numerator / denominator
+        elif min(list) > 0:
+            for i in range(0, len(list)):
                 numerator += (list[i] * np.exp(-v * rho_tilde[i]))
                 denominator += np.exp(-v * rho_tilde[i])
-                out = numerator / denominator
-            else:
-                out = 0
+            out = numerator / denominator
+        else:
+            out = 0
         return out
 
 
