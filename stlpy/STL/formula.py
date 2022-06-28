@@ -385,8 +385,7 @@ class STLTree(STLFormula):
             elif robustness_type == RobustnessMetrics.wSTL_AGM:
                 return RobustnessMeasure_or.wSTL_AGM(self, y, t, robustness_type)
             elif robustness_type == RobustnessMetrics.NewRobustness:
-                # TODO:
-                pass
+                return RobustnessMeasure_or.NewRobustness(self, y, t, robustness_type)
             elif robustness_type == RobustnessMetrics.TimeRobustness:
                 # TODO:
                 pass

@@ -74,7 +74,7 @@ if x is not None:
     # Plot the solution
     ax = plt.gca()
     scenario.add_to_plot(ax)
-    plt.scatter(*x1[:2,:])
+    plt.scatter(*x[:2,:])
     plt.show()
 
 # robustness_index = [1, 2, 3]
