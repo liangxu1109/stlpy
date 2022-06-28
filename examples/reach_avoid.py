@@ -63,14 +63,14 @@ solver1 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetric
 #solver4.AddQuadraticCost(Q,R)
 
 # Solve the optimization problem
-x1, u1, _, _= solver1.Solve()
+x, u, _, _= solver1.Solve()
 # x2, u2, _, _= solver2.Solve()
 # x3, u3, _, _= solver3.Solve()
 #x4, u4, _, _= solver4.Solve()
-print(u1)
+print(u)
 # print(u2)
 # print(u3)
-if x1 is not None:
+if x is not None:
     # Plot the solution
     ax = plt.gca()
     scenario.add_to_plot(ax)
