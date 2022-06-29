@@ -69,31 +69,31 @@ import math
 # solver.append("asd")
 # print(solver)
 
-list=[1,-2,3,4,5,6,7,8,9,10]
-# if any(list[i] <= 0 for i in range(len(list))):
-#     print(min(list))
-v = 3  # parameter v > 0 is then defined by taking the weighted average of these effective measures
-rho_tilde = [] #Using this normalized measure, it can be transformed to be non-positive and becomes 0 at rho_i = rho_min
-rho_eff = []
-numerator = 0
-denominator = 0
-rho_min = min(list)
-for i in range(0, len(list)):
-    if rho_min != 0:
-        tilde_i = (list[i] - rho_min) / rho_min
-        rho_tilde.append(tilde_i)
-        rho_eff.append(rho_min * np.exp(rho_tilde[i]))
-if min(list) < 0:
-    for i in range(0, len(list)):
-        numerator += (rho_eff[i] * np.exp(v * rho_tilde[i]))
-        denominator += np.exp(v * rho_tilde[i])
-    out = numerator / denominator
-elif min(list) > 0:
-    for i in range(0, len(list)):
-        numerator += (list[i] * np.exp(-v * rho_tilde[i]))
-        denominator += np.exp(-v * rho_tilde[i])
-    out = numerator / denominator
-else:
-    out = 0
-print(out)
-print(rho_min)
+# list=[1,-2,3,4,5,6,7,8,9,10]
+# # if any(list[i] <= 0 for i in range(len(list))):
+# #     print(min(list))
+# v = 3  # parameter v > 0 is then defined by taking the weighted average of these effective measures
+# rho_tilde = [] #Using this normalized measure, it can be transformed to be non-positive and becomes 0 at rho_i = rho_min
+# rho_eff = []
+# numerator = 0
+# denominator = 0
+# rho_min = min(list)
+# for i in range(0, len(list)):
+#     if rho_min != 0:
+#         tilde_i = (list[i] - rho_min) / rho_min
+#         rho_tilde.append(tilde_i)
+#         rho_eff.append(rho_min * np.exp(rho_tilde[i]))
+# if min(list) < 0:
+#     for i in range(0, len(list)):
+#         numerator += (rho_eff[i] * np.exp(v * rho_tilde[i]))
+#         denominator += np.exp(v * rho_tilde[i])
+#     out = numerator / denominator
+# elif min(list) > 0:
+#     for i in range(0, len(list)):
+#         numerator += (list[i] * np.exp(-v * rho_tilde[i]))
+#         denominator += np.exp(-v * rho_tilde[i])
+#     out = numerator / denominator
+# else:
+#     out = 0
+# print(out)
+# print(rho_min)
