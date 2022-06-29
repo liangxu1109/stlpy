@@ -67,7 +67,7 @@ x0 = np.array([1.0,2.0,0,0])
 # x2, u2, _, _= solver2.Solve()
 # x3, u3, _, _= solver3.Solve()
 #x4, u4, _, _= solver4.Solve()
-print(u)
+#print(u)
 # print(u2)
 # print(u3)
 # if x is not None:
