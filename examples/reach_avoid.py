@@ -21,7 +21,7 @@ from stlpy.solvers.scipy.scipysolver import solver_list
 # Specification Parameters
 goal_bounds = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
 obstacle_bounds = (3,5,4,6)
-T = 20
+T = 25
 
 # Define the system and specification
 scenario = ReachAvoid(goal_bounds, obstacle_bounds, T)
@@ -77,7 +77,7 @@ if x is not None:
     plt.scatter(*x[:2,:])
     plt.show()
 
-# robustness_index = [1, 2, 3]
+# robustness_index = [0, 1, 2, 3]
 # solver = [0]
 # for i in robustness_index:
 #     solver.append(solver_list(spec, sys, x0, T, i))

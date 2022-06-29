@@ -86,6 +86,21 @@ class RobustnessMeasure_or():
         #     out = numerator / denominator
         # else:
         #     out = 0
+
+        # list = ([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in
+        #          enumerate(self.subformula_list)])
+        # if any(list[i] > 0 for i in range(len(list))):
+        #     list1 = []
+        #     for i in range(len(list)):
+        #         if list[i] > 0:
+        #             list1.append(list[i])
+        #     out = (sum(list1) / len(list))
+        # else:
+        #     out = 1 - list[0]
+        #     for i in range(1, len(list)):
+        #         out *= (1 - list[i])
+        #     out = - math.pow(out, 1 / len(list)) + 1
+
         list = ([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in
                  enumerate(self.subformula_list)])
         if any(list[i] > 0 for i in range(len(list))):
