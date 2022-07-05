@@ -22,6 +22,8 @@ from stlpy.solvers.scipy.scipysolver import solver_list, get_robustness_name
 goal_bounds = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
 obstacle_bounds = (3,5,4,6)
 T = 25
+# T = 20
+# T = 30
 
 # Define the system and specification
 scenario = ReachAvoid(goal_bounds, obstacle_bounds, T)
