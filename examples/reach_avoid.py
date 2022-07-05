@@ -16,7 +16,7 @@ from stlpy.enumerations.option import RobustnessMetrics
 from stlpy.benchmarks import ReachAvoid
 from stlpy.solvers import *
 from stlpy.enumerations.option import RobustnessMetrics
-from stlpy.solvers.scipy.scipysolver import solver_list
+from stlpy.solvers.scipy.scipysolver import solver_list, get_robustness_name
 
 # Specification Parameters
 goal_bounds = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
@@ -77,17 +77,18 @@ x0 = np.array([1.0,2.0,0,0])
 #     plt.scatter(*x[:2,:])
 #     plt.show()
 
-robustness_index = [6]
-solver = [0]
+robustness_index = [0, 1, 2, 3, 4, 5, 6]
+solver = []
 for i in robustness_index:
     solver.append(solver_list(spec, sys, x0, T, i))
 ax = plt.gca()
 scenario.add_to_plot(ax)
 
 # Solve the optimization problem
-for i in range(1,len(robustness_index)+1):
+for i in robustness_index:
     xi, ui, _, _ = solver[i].Solve()
     if xi is not None:
-        plt.scatter(*xi[:2, :])
+        plt.scatter(*xi[:2, :], label=get_robustness_name(i))
+ax.legend()
 plt.show()
 

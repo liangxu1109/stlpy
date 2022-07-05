@@ -69,22 +69,22 @@ class RobustnessMeasure_or():
         denominator = 0
         rho_max = max(list)
         if rho_max < 0:
-            for i in range(0, len(list)):
-                tilde_i = (rho_max - list[i]) / rho_max
-                rho_tilde.append(tilde_i)
-                rho_eff.append(rho_max * np.exp(rho_tilde[i]))
-            for i in range(0, len(list)):
-                numerator += (rho_eff[i] * np.exp(v * rho_tilde[i]))
-                denominator += np.exp(v * rho_tilde[i])
+            for j in range(0, len(list)):
+                tilde_j = (rho_max - list[j]) / rho_max
+                rho_tilde.append(tilde_j)
+                rho_eff.append(rho_max * np.exp(rho_tilde[j]))
+            for j in range(0, len(list)):
+                numerator += (rho_eff[j] * np.exp(v * rho_tilde[j]))
+                denominator += np.exp(v * rho_tilde[j])
             out = numerator / denominator
         elif rho_max > 0:
-            for i in range(0, len(list)):
-                tilde_i = (rho_max - list[i]) / rho_max
-                rho_tilde.append(tilde_i)
-                rho_eff.append(rho_max * np.exp(rho_tilde[i]))
-            for i in range(0, len(list)):
-                numerator += (list[i] * np.exp(-v * rho_tilde[i]))
-                denominator += np.exp(-v * rho_tilde[i])
+            for j in range(0, len(list)):
+                tilde_j = (rho_max - list[j]) / rho_max
+                rho_tilde.append(tilde_j)
+                rho_eff.append(rho_max * np.exp(rho_tilde[j]))
+            for j in range(0, len(list)):
+                numerator += (list[j] * np.exp(-v * rho_tilde[j]))
+                denominator += np.exp(-v * rho_tilde[j])
             out = numerator / denominator
         else:
             out = 0

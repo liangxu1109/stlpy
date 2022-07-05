@@ -69,7 +69,7 @@ import math
 # solver.append("asd")
 # print(solver)
 
-# list=[1,-2,3,4,5,6,7,8,9,10]
+list=[1,-2,3,4,5,6,7,8,9,10]
 # # if any(list[i] <= 0 for i in range(len(list))):
 # #     print(min(list))
 # v = 3  # parameter v > 0 is then defined by taking the weighted average of these effective measures
@@ -97,3 +97,5 @@ import math
 #     out = 0
 # print(out)
 # print(rho_min)
+for i in list:
+    print(i)

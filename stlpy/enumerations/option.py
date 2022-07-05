@@ -1,8 +1,8 @@
 from enum import Enum, unique
 
 class RobustnessMetrics(Enum):
-    AGM = "AGM"
     Standard = 'Traditional'
+    AGM = "AGM"
     LSE = 'LSE'
     Smooth = 'Smooth'
     wSTL_Standard = 'wSTL_Standard'
