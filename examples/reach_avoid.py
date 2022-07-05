@@ -77,7 +77,7 @@ x0 = np.array([1.0,2.0,0,0])
 #     plt.scatter(*x[:2,:])
 #     plt.show()
 
-robustness_index = [0, 1, 2, 3]
+robustness_index = [6]
 solver = [0]
 for i in robustness_index:
     solver.append(solver_list(spec, sys, x0, T, i))

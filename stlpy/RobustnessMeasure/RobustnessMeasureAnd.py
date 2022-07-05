@@ -98,7 +98,7 @@ class RobustnessMeasure_and():
         rho_eff = []
         numerator = 0
         denominator = 0
-        rho_min = min(list) #why error? TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'
+        rho_min = min(list)
         if rho_min < 0:
             for i in range(0, len(list)):
                 tilde_i = (list[i] - rho_min) / rho_min
