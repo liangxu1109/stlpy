@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from stlpy.benchmarks import EitherOr
 from stlpy.solvers import *
 from stlpy.enumerations.option import RobustnessMetrics
-from stlpy.solvers.scipy.scipysolver import solver_list
+from stlpy.solvers.scipy.scipysolver import solver_list, get_robustness_name
 # Specification Parameters
 goal = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
 target_one = (1,2,6,7)
@@ -39,10 +39,6 @@ x0 = np.array([2.0,2.0,0,0])
 #solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeMICPSolver(spec, sys, x0, T, robustness_cost=True)
 #solver = DrakeSos1Solver(spec, sys, x0, T, robustness_cost=True)
-robustness_index = [1, 2, 3]
-solver = [0]
-for i in robustness_index:
-    solver.append(solver_list(spec, sys, x0, T, i))
 
 # Set bounds on state and control variables
 # u_min = np.array([-0.5,-0.5])
@@ -55,12 +51,18 @@ for i in robustness_index:
 # Add quadratic running cost (optional)
 #solver.AddQuadraticCost(Q,R)
 
+robustness_index = [0, 1, 2, 3, 4, 5, 6]
+solver = []
+for i in robustness_index:
+    solver.append(solver_list(spec, sys, x0, T, i))
 ax = plt.gca()
 scenario.add_to_plot(ax)
+
 # Solve the optimization problem
-for i in range(1,len(robustness_index)+1):
+for i in robustness_index:
     xi, ui, _, _ = solver[i].Solve()
     if xi is not None:
-        plt.scatter(*xi[:2, :])
+        plt.scatter(*xi[:2, :], label=get_robustness_name(i))
+ax.legend()
 plt.show()
 

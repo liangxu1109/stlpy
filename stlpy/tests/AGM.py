@@ -97,5 +97,6 @@ list=[1,-2,3,4,5,6,7,8,9,10]
 #     out = 0
 # print(out)
 # print(rho_min)
-for i in list:
-    print(i)
+# for i in list:
+#     print(i)
+print(min(list))

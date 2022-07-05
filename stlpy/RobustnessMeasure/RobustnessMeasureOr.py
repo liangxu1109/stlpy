@@ -46,17 +46,26 @@ class RobustnessMeasure_or():
     def wSTL_AGM(self, y, t, robustness_type):
         list = ([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in
                  enumerate(self.subformula_list)])
+        x = np.array(list)
+        w = []
+        for i in range(0, len(list)):
+            w.append(1)
+        for i in range(0, len(list)):  # Normaliztion of each weight
+            w[i] = w[i] / sum(w)
+
         if any(list[i] > 0 for i in range(len(list))):
-            list1 = []
+            out = 0
+            list1 = []  # list which is calculated, only choose the positive robustness
             for i in range(len(list)):
                 if list[i] > 0:
                     list1.append(list[i])
-            out = (sum(list1) / len(list))
+            for i in range(0, len(list1)):
+                out += list1[i] * w[i]
         else:
-            out = 1 - list[0]
+            out = - math.pow(1 - list[0], w[0])  #initial number
             for i in range(1, len(list)):
-                out *= (1 - list[i])
-            out = - math.pow(out, 1 / len(list)) + 1
+                out *= math.pow(1 - list[i], w[i])
+            out = out + 1
         return out
 
     def NewRobustness(self, y, t, robustness_type):

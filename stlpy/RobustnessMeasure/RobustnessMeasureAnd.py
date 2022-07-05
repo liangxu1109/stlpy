@@ -76,18 +76,19 @@ class RobustnessMeasure_and():
         for i in range(0, len(list)):  # Normaliztion of each weight
             w[i] = w[i] / sum(w)
 
-        if any(list[i] <= 0 for i in range(len(list))):
+        if any(list[i] < 0 for i in range(len(list))):
             out = 0
             list1 = []  # list which is calculated, only choose the negative robustness
             for i in range(len(list)):
                 if list[i] <= 0:
                     list1.append(list[i])
-            for i in range(0, len(list1)):
+            for i in range(0, len(list1)): #the conjunction is not satisfied
                 out += list1[i] * w[i]
         else:
-            out = math.pow(list[0], w[0])  #
+            out = math.pow(1 + list[0], w[0])  #the conjunction is satisfied,
             for i in range(1, len(list)):
-                out *= math.pow(list[i], w[i])
+                out *= math.pow(1 + list[i], w[i])
+            out = out - 1
         return out
 
     def NewRobustness(self, y, t, robustness_type):
