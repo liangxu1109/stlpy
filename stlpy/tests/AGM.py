@@ -99,4 +99,11 @@ list=[1,-2,3,4,5,6,7,8,9,10]
 # print(rho_min)
 # for i in list:
 #     print(i)
-print(min(list))
+w = []
+for i in range(0, len(list)):
+    w.append(1.5)
+print(w)
+sum = sum(w)
+for i in range(0, len(list)):  # Normaliztion of each weight
+    w[i] = w[i] / sum
+print(w)

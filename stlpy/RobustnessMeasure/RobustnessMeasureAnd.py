@@ -73,8 +73,9 @@ class RobustnessMeasure_and():
         #     w[i] = w[i] / sum(w)
         for i in range(0, len(list)):
             w.append(1)
+        sum1 = sum(w)
         for i in range(0, len(list)):  # Normaliztion of each weight
-            w[i] = w[i] / sum(w)
+            w[i] = w[i] / sum1
 
         if any(list[i] < 0 for i in range(len(list))):
             out = 0

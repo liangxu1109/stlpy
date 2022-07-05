@@ -77,9 +77,9 @@ x0 = np.array([1.0,2.0,0,0])
 #     plt.scatter(*x[:2,:])
 #     plt.show()
 
-robustness_index = [1, 5]
+robustness_index = [0, 1, 2, 3, 4, 5, 6]
 solver = []
-for i in range(0, 6): #set up all solver
+for i in range(0, 7): #set up all solver
     solver.append(solver_list(spec, sys, x0, T, i))
 ax = plt.gca()
 scenario.add_to_plot(ax)
