@@ -40,8 +40,19 @@ class RobustnessMeasure_or():
         return (1 / k) * np.log(np.sum(np.exp(k * (x))))
 
     def wSTL_Standard(self, y, t, robustness_type):
-        return max([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in
-                    enumerate(self.subformula_list)])
+        list = ([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in
+                 enumerate(self.subformula_list)])
+        x = np.array(list)
+        w = []
+        for i in range(0, len(list)):#set weight for each formula
+            w.append(1)
+        sum1 = sum(w)
+        for i in range(0, len(list)):  # Normaliztion of each weight
+            w[i] = w[i] / sum1
+        out = []
+        for i in range(0, len(w)):
+            out.append(((w[i] - 0.5) * np.sign(x[i]) + 0.5) * x[i])
+        return max(out)
 
     def wSTL_AGM(self, y, t, robustness_type):
         list = ([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in

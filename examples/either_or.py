@@ -19,7 +19,7 @@ goal = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
 target_one = (1,2,6,7)
 target_two = (7,8,4.5,5.5)
 obstacle = (3,5,4,6)
-T = 20
+T = 25
 dwell_time = 5
 
 # Create the specification
@@ -29,11 +29,11 @@ spec.simplify()
 sys = scenario.GetSystem()
 
 # Specify any additional running cost
-Q = 1e-1*np.diag([0,0,1,1])   # just penalize high velocities
-R = 1e-0*np.eye(2)
+Q = 1e-6*np.diag([0,0,0,0])   # just penalize high velocities
+R = 1e-1*np.eye(2)
 
 # Initial state
-x0 = np.array([2.0,2.0,0,0])
+x0 = np.array([1.0,2.0,0,0])
 
 # Specify a solution strategy
 #solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True)
@@ -51,15 +51,16 @@ x0 = np.array([2.0,2.0,0,0])
 # Add quadratic running cost (optional)
 #solver.AddQuadraticCost(Q,R)
 
-robustness_index = [0, 1, 2, 3, 4, 5, 6]
+robustness_index = [0,1,2]
 solver = []
-for i in robustness_index:
+for i in range(0, 7):
     solver.append(solver_list(spec, sys, x0, T, i))
 ax = plt.gca()
 scenario.add_to_plot(ax)
 
 # Solve the optimization problem
 for i in robustness_index:
+    solver[i].AddQuadraticCost(Q, R)
     xi, ui, _, _ = solver[i].Solve()
     if xi is not None:
         plt.scatter(*xi[:2, :], label=get_robustness_name(i))

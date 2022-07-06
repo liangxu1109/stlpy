@@ -99,11 +99,18 @@ list=[1,-2,3,4,5,6,7,8,9,10]
 # print(rho_min)
 # for i in list:
 #     print(i)
-w = []
-for i in range(0, len(list)):
-    w.append(1.5)
-print(w)
-sum = sum(w)
-for i in range(0, len(list)):  # Normaliztion of each weight
-    w[i] = w[i] / sum
-print(w)
+# w = []
+# for i in range(0, len(list)):
+#     w.append(1.5)
+# print(w)
+# sum = sum(w)
+# for i in range(0, len(list)):  # Normaliztion of each weight
+#     w[i] = w[i] / sum
+# print(w)
+x_min = np.array([0.0, 0.0, -1.0, -1.0])
+x_max = np.array([10.0, 10.0, 1.0, 1.0])
+bounds = np.asarray([[x_min[0], x_max[0]],
+                    [x_min[1], x_max[1]],
+                    [x_min[2], x_max[2]],
+                    [x_min[3], x_max[3]]])
+print(bounds)

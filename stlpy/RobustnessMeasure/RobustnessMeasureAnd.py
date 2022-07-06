@@ -50,10 +50,11 @@ class RobustnessMeasure_and():
         #     w.append(w_i)
         for i in range(0, len(list)):
             w.append(1)
+        sum1 = sum(w)
         for i in range(0, len(list)):  # Normaliztion of each weight
-            w[i] = w[i] / sum(w)
-        out=[]
-        for i in range(0,len(w)):
+            w[i] = w[i] / sum1
+        out = []
+        for i in range(0, len(w)):
             out.append(((0.5-w[i]) * np.sign(x[i]) + 0.5) * x[i])
         return min(out)
 

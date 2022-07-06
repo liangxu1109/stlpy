@@ -35,11 +35,11 @@ sys = scenario.GetSystem()
 
 # Specify any additional running cost (this helps the numerics in
 # a gradient-based method)
-Q = 1e-5*np.diag([0,0,1,1])   # just penalize high velocities
+Q = 1e-1*np.diag([0,0,1,1])   # just penalize high velocities
 R = 1e-1*np.eye(2)
 
 # Initial state
-x0 = np.array([1.0,2.0,0,0])
+x0 = np.array([1.0, 2.0, 0, 0])
 
 # Choose a solver
 #solver = GurobiMICPSolver(spec, sys, x0, T, robustness_cost=True, robustness_type=RobustnessMetrics.Standard)
@@ -51,12 +51,10 @@ x0 = np.array([1.0,2.0,0,0])
 # solver3 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.Smooth)
 #solver4 = ScipyGradientSolver(spec, sys, x0, T, robustness_type=RobustnessMetrics.LSE)
 #Set bounds on state and control variables
-# u_min = np.array([-0.5,-0.5])
-# u_max = np.array([0.5, 0.5])
+# u_min = np.array([-1,-1])
+# u_max = np.array([1, 1])
 # x_min = np.array([0.0, 0.0, -1.0, -1.0])
 # x_max = np.array([10.0, 10.0, 1.0, 1.0])
-#solver.AddControlBounds(u_min, u_max)
-#solver.AddStateBounds(x_min, x_max)
 
 # Add quadratic running cost (optional)
 #solver1.AddQuadraticCost(Q,R)
@@ -64,21 +62,8 @@ x0 = np.array([1.0,2.0,0,0])
 # solver3.AddQuadraticCost(Q,R)
 #solver4.AddQuadraticCost(Q,R)
 
-# Solve the optimization problem
-# x, u, _, _= solver1.Solve()
-# x2, u2, _, _= solver2.Solve()
-# x3, u3, _, _= solver3.Solve()
-#x4, u4, _, _= solver4.Solve()
-#print(u)
-# print(u2)
-# print(u3)
-# if x is not None:
-#     # Plot the solution
-#     ax = plt.gca()
-#     scenario.add_to_plot(ax)
-#     plt.scatter(*x[:2,:])
-#     plt.show()
-
+#robustness_index = [0, 2, 3, 6]
+#robustness_index = [1, 4, 5]
 robustness_index = [0, 1, 2, 3, 4, 5, 6]
 solver = []
 for i in range(0, 7): #set up all solver
@@ -88,6 +73,7 @@ scenario.add_to_plot(ax)
 
 # Solve the optimization problem
 for i in robustness_index:
+    #solver[i].AddQuadraticCost(Q, R)
     xi, ui, _, _ = solver[i].Solve()
     if xi is not None:
         plt.scatter(*xi[:2, :], label=get_robustness_name(i))
