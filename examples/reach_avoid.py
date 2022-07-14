@@ -21,7 +21,7 @@ from stlpy.solvers.scipy.scipysolver import solver_list, get_robustness_name
 # Specification Parameters
 goal_bounds = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
 obstacle_bounds = (3,5,4,6)
-T = 25
+T = 15
 # T = 20
 # T = 30
 
@@ -35,7 +35,7 @@ sys = scenario.GetSystem()
 
 # Specify any additional running cost (this helps the numerics in
 # a gradient-based method)
-Q = 1e-1*np.diag([0,0,1,1])   # just penalize high velocities
+Q = 1e-4*np.diag([0,0,1,1])   # just penalize high velocities
 R = 1e-1*np.eye(2)
 
 # Initial state
@@ -64,7 +64,7 @@ x0 = np.array([1.0, 2.0, 0, 0])
 
 #robustness_index = [0, 2, 3, 6]
 #robustness_index = [1, 4, 5]
-robustness_index = [0, 1, 2, 3, 4, 5, 6]
+robustness_index = [4]
 solver = []
 for i in range(0, 7): #set up all solver
     solver.append(solver_list(spec, sys, x0, T, i))
@@ -73,10 +73,12 @@ scenario.add_to_plot(ax)
 
 # Solve the optimization problem
 for i in robustness_index:
-    #solver[i].AddQuadraticCost(Q, R)
+    print("Robustness type: ", get_robustness_name(i))
+    solver[i].AddQuadraticCost(Q, R)
     xi, ui, _, _ = solver[i].Solve()
     if xi is not None:
         plt.scatter(*xi[:2, :], label=get_robustness_name(i))
+        plt.plot(*xi[:2, :], '--')
 ax.legend()
 plt.show()
 

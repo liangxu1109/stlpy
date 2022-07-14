@@ -87,10 +87,18 @@ class ScipyGradientSolver(STLSolver):
         if res.success:
             u = res.x.reshape((self.sys.m,self.T))
             x, y = self.forward_rollout(u)
+            print("Cost function evaluation times: ", res.nfev)
+            print("Cost function iteration times: ", res.nit)
 
             rho = self.spec.robustness(y, 0, self.robustness_type)
+            cost = 0
+            for t in range(self.T):
+                cost += x[:, t].T@self.Q@x[:, t] + u[:, t].T@self.R@u[:, t]
+            print("QuadraticCost: ", cost)
+            print("Cost: ", self.cost(u))
             if self.verbose:
                 print("Optimal robustness: ", rho)
+                print("""---------------------------------------""")
         else:
             x = None
             u = None
@@ -135,7 +143,7 @@ class ScipyGradientSolver(STLSolver):
 
         # Add additional state and control costs
         for t in range(self.T):
-            cost += x[:,t].T@self.Q@x[:,t] + u[:,t].T@self.R@u[:,t]
+            cost += x[:, t].T@self.Q@x[:, t] + u[:, t].T@self.R@u[:, t]
 
         # Add the (negative) robustness of this signal y with respect
         # to the specification to the cost

@@ -51,7 +51,7 @@ class RobustnessMeasure_or():
             w[i] = w[i] / sum1
         out = []
         for i in range(0, len(w)):
-            out.append(((w[i] - 0.5) * np.sign(x[i]) + 0.5) * x[i])
+            out.append((-(0.5-w[i]) * np.sign(x[i]) + 0.5) * (x[i]))
         return max(out)
 
     def wSTL_AGM(self, y, t, robustness_type):

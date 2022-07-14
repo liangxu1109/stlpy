@@ -52,7 +52,7 @@ x0 = np.array([1.0,2.0,0])
 
 
 # Solve the optimization problem
-robustness_index = [0,1,2,3]
+robustness_index = [4]
 solver = []
 for i in range(0, 7):
     solver.append(solver_list(spec, sys, x0, T, i))

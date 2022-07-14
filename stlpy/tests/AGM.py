@@ -113,4 +113,4 @@ bounds = np.asarray([[x_min[0], x_max[0]],
                     [x_min[1], x_max[1]],
                     [x_min[2], x_max[2]],
                     [x_min[3], x_max[3]]])
-print(bounds)
+print(np.sign(list))
