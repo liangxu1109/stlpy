@@ -83,7 +83,7 @@ class RobustnessMeasure_or():
     def NewRobustness(self, y, t, robustness_type):
         list = ([formula.robustness(y, t + self.timesteps[i], robustness_type) for i, formula in
                  enumerate(self.subformula_list)])  # all robustness in a entirely encoded STL
-        v = 3  # parameter v > 0 is then defined by taking the weighted average of these effective measures
+        v = 10  # parameter v > 0 is then defined by taking the weighted average of these effective measures
         rho_tilde = []  # Using this normalized measure, it can be transformed to be non-positive and becomes 0 at rho_i = rho_max
         rho_eff = []
         numerator = 0

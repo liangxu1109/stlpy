@@ -11,6 +11,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 from stlpy.enumerations.option import RobustnessMetrics
 
 from stlpy.benchmarks import ReachAvoid
@@ -20,8 +21,8 @@ from stlpy.solvers.scipy.scipysolver import solver_list, get_robustness_name
 
 # Specification Parameters
 goal_bounds = (7,8,8,9)     # (xmin, xmax, ymin, ymax)
-obstacle_bounds = (3,5,4,6)
-T = 15
+obstacle_bounds = (2.8,4.8,3.2,5.2)
+T = 24
 # T = 20
 # T = 30
 
@@ -35,7 +36,7 @@ sys = scenario.GetSystem()
 
 # Specify any additional running cost (this helps the numerics in
 # a gradient-based method)
-Q = 1e-4*np.diag([0,0,1,1])   # just penalize high velocities
+Q = 1e-3*np.diag([0,0,1,1])   # just penalize high velocities
 R = 1e-1*np.eye(2)
 
 # Initial state
@@ -62,23 +63,34 @@ x0 = np.array([1.0, 2.0, 0, 0])
 # solver3.AddQuadraticCost(Q,R)
 #solver4.AddQuadraticCost(Q,R)
 
-#robustness_index = [0, 2, 3, 6]
-#robustness_index = [1, 4, 5]
-robustness_index = [4]
+#robustness_index = [0]
+robustness_index = [0, 1, 2, 3, 4, 5, 6]
 solver = []
 for i in range(0, 7): #set up all solver
     solver.append(solver_list(spec, sys, x0, T, i))
 ax = plt.gca()
 scenario.add_to_plot(ax)
 
-# Solve the optimization problem
+#Solve the optimization problem
 for i in robustness_index:
     print("Robustness type: ", get_robustness_name(i))
     solver[i].AddQuadraticCost(Q, R)
-    xi, ui, _, _ = solver[i].Solve()
+    xi, ui, _, _, pi = solver[i].Solve()
     if xi is not None:
         plt.scatter(*xi[:2, :], label=get_robustness_name(i))
         plt.plot(*xi[:2, :], '--')
 ax.legend()
+
+plt.figure()
+for i in robustness_index:
+    print("Robustness type: ", get_robustness_name(i))
+    solver[i].AddQuadraticCost(Q, R)
+    xi, ui, _, _, pi = solver[i].Solve()
+    x = np.arange(0, len(pi), 1)
+    y = pi
+    plt.ylim(0, 1500)
+    plt.xlim(0, 20)
+    plt.plot(x, y, label=get_robustness_name(i))
+plt.legend()
 plt.show()
 

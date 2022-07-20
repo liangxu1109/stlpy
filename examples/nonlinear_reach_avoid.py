@@ -31,7 +31,7 @@ sys = scenario.GetSystem()
 # Specify any additional running cost (this helps the numerics in
 # a gradient-based method)
 Q = np.diag([0,0,0])
-R = 1e-3*np.eye(2)
+R = 1e-4*np.eye(2)
 
 # Initial state
 x0 = np.array([1.0,2.0,0])

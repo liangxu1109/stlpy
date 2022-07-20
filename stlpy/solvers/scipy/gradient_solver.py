@@ -1,8 +1,10 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import time
 from scipy.optimize import minimize
 from stlpy.STL.predicate import LinearPredicate
 import stlpy.enumerations.option
+from autograd import grad
 from ..base import STLSolver
 
 class ScipyGradientSolver(STLSolver):
@@ -75,9 +77,12 @@ class ScipyGradientSolver(STLSolver):
         #u_guess = np.random.uniform(0.29,0.3, (self.sys.m,self.T))
         # Run scipy's minimize
         start_time = time.time()
+        p = []
+        def save(u):
+            p.append(self.cost(u))
 
         # Do a forward rollout to compute the state and output trajectories
-        res = minimize(self.cost, u_guess.flatten(), method=self.method)
+        res = minimize(self.cost, u_guess.flatten(), method=self.method, callback=save)
         solve_time = time.time() - start_time
 
         if self.verbose:
@@ -104,7 +109,7 @@ class ScipyGradientSolver(STLSolver):
             u = None
             rho = -np.inf
 
-        return (x,u,rho,solve_time)
+        return x, u, rho, solve_time, p
 
     def forward_rollout(self, u):
         """
@@ -151,5 +156,4 @@ class ScipyGradientSolver(STLSolver):
 
         return cost
 
-    def constraint(self, spec, u_flat):
-        pass
+
