@@ -64,7 +64,8 @@ x0 = np.array([1.0, 2.0, 0, 0])
 #solver4.AddQuadraticCost(Q,R)
 
 #robustness_index = [0]
-robustness_index = [0, 1, 2, 3, 4, 5, 6]
+# robustness_index = [0, 1, 2, 3, 4, 5, 6]
+robustness_index = [1, 4, 5]
 solver = []
 for i in range(0, 7): #set up all solver
     solver.append(solver_list(spec, sys, x0, T, i))
@@ -89,7 +90,7 @@ for i in robustness_index:
     x = np.arange(0, len(pi), 1)
     y = pi
     plt.ylim(0, 1500)
-    plt.xlim(0, 20)
+    plt.xlim(0, 25)
     plt.plot(x, y, label=get_robustness_name(i))
 plt.legend()
 plt.show()

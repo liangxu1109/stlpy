@@ -1,5 +1,6 @@
 import numpy as np
 from .formula import STLFormula
+from stlpy.enumerations.option import RobustnessMetrics
 
 class NonlinearPredicate(STLFormula):
     """
@@ -36,8 +37,10 @@ class NonlinearPredicate(STLFormula):
         assert isinstance(t, int), "timestep t must be an integer"
         assert y.shape[0] == self.d, "y must be of shape (d,T)"
         assert y.shape[1] > t, "requested timestep %s, but y only has %s timesteps" % (t, y.shape[1])
-
-        return np.array([self.g(y[:,t])])
+        safety_margin = 0.5
+        if robustness_type == RobustnessMetrics.wSTL_Standard:
+            return (np.array([self.g(y[:,t])]) - safety_margin) / 10
+        return np.array([self.g(y[:,t])]) / 10
 
     def is_predicate(self):
         return True
@@ -103,7 +106,11 @@ class LinearPredicate(STLFormula):
         assert isinstance(t, int), "timestep t must be an integer"
         assert y.shape[0] == self.d, "y must be of shape (d,T)"
         assert y.shape[1] > t, "requested timestep %s, but y only has %s timesteps" % (t, y.shape[1])
-        out = self.a.T @ y[:, t] - self.b
+        safety_margin = 0.5
+        if robustness_type == RobustnessMetrics.wSTL_Standard:
+            out = (self.a.T @ y[:, t] - self.b - safety_margin) / 10
+        else:
+            out = (self.a.T @ y[:, t] - self.b) / 10
         return out
 
     def is_predicate(self):
